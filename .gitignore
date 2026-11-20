@@ -10,6 +10,7 @@ __pycache__/
 
 # Duplicate serving directory
 ImmoVisionVR/
+UltraLuxe_NextGen/
 
 # Scratch and intermediate scripts
 generate_report.py
