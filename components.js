@@ -144,6 +144,7 @@ AFRAME.registerSystem('x0014-immovision-system', {
     if (roomName === 'foyer') this.state.tourState = 'STATE_FOYER';
     else if (roomName === 'balcony') this.state.tourState = 'STATE_RESOLUTION';
     else this.state.tourState = 'STATE_LIVING';
+    window.dispatchEvent(new CustomEvent('immovision-room-changed', { detail: { room: roomName } }));
     this.el.emit('x0014-state-changed', { room: roomName, tourState: this.state.tourState });
     this.updateHUD();
   },
