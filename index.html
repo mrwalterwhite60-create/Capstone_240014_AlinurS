@@ -3,13 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>ImmoVision VR Platform — BI Group PropTech Twin</title>
   
   <!-- A-Frame 1.8.0 WebXR Release -->
   <script src="https://aframe.io/releases/1.8.0/aframe.min.js"></script>
   
   <!-- Custom Prefixed WebXR Components (x0014-) -->
-  <script src="components.js"></script>
+  <script src="components.js?v=2.5.1"></script>
   
   <style>
     :root {
@@ -546,9 +549,11 @@
         <!-- ================================================================= -->
         <!-- Wall-Mounted Bronze Display Frame Mounted Firmly on Solid West Wall -->
         <a-entity position="-7.15 1.65 1.5" rotation="0 90 0">
-          <a-box width="2.4" height="1.6" depth="0.04" material="color: #0f172a; metalness: 0.7"></a-box>
-          <a-plane position="0 0 0.025" width="2.3" height="1.5" material="src: #tex-blueprint; roughness: 0.4"></a-plane>
-          <a-text value="UNIT #414 ARCHITECTURAL BIM SCHEMATIC - BI GROUP GRAND OPERA" position="0 0.68 0.03" align="center" width="2.4" color="#fbbf24"></a-text>
+          <a-box width="2.44" height="1.64" depth="0.04" material="color: #0f172a; metalness: 0.8; roughness: 0.2"></a-box>
+          <a-plane position="0 0 0.025" width="2.36" height="1.56" material="src: #tex-blueprint; roughness: 0.4"></a-plane>
+          <!-- Dedicated Header Plaque Above Drawing (Zero Text Clashing!) -->
+          <a-box position="0 0.92 0.01" width="2.44" height="0.14" depth="0.03" material="color: #070e18; metalness: 0.7"></a-box>
+          <a-text value="UNIT #414 BIM SPATIAL PLAN - BI GROUP GRAND OPERA" position="0 0.92 0.03" align="center" width="2.3" color="#38bdf8"></a-text>
         </a-entity>
 
         <!-- Ergonomic Interactive Showroom Kiosk Inside Foyer -->
