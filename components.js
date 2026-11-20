@@ -113,6 +113,8 @@ AFRAME.registerSystem('x0014-immovision-system', {
     const walls = document.querySelectorAll('.room-wall');
     walls.forEach(w => {
       w.setAttribute('material', {
+        src: '#tex-wall-plaster',
+        repeat: '4 2',
         color: cfg.color,
         roughness: cfg.rough
       });
