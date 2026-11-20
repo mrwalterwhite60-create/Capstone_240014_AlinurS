@@ -1,0 +1,17 @@
+# Previous assignments archives
+PA*.zip
+PA* (2).zip
+*.docx
+Capstone_Proposal*.pdf
+*.log
+.DS_Store
+Thumbs.db
+__pycache__/
+
+# Duplicate serving directory
+ImmoVisionVR/
+
+# Scratch and intermediate scripts
+generate_report.py
+generate_slides.py
+spec_extracted.txt
