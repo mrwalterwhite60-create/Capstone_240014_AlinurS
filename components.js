@@ -596,18 +596,34 @@ AFRAME.registerComponent('x0014-holographic-palette', {
 
     const buttons = this.el.querySelectorAll('.pal-btn');
     buttons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
+      const execute = () => {
         const actionType = btn.getAttribute('data-type');
         const actionVal = btn.getAttribute('data-value');
 
-        if (actionType === 'floor') this.system.setFloor(actionVal, 'fallback');
-        else if (actionType === 'wall') this.system.setWall(actionVal, 'fallback');
-        else if (actionType === 'lighting') this.system.setLighting(actionVal, 'fallback');
-        else if (actionType === 'door') this.system.toggleDoor();
-      });
+        // Tactile button depression animation
+        btn.setAttribute('animation__press', 'property: scale; from: 0.90 0.90 0.90; to: 1.0 1.0 1.0; dur: 200; easing: easeOutQuad; startEvents: pal_press');
+        btn.emit('pal_press');
 
-      btn.addEventListener('mouseenter', () => btn.setAttribute('scale', '1.08 1.08 1.08'));
+        if (actionType === 'floor') {
+          this.system.setFloor(actionVal, 'kiosk');
+        } else if (actionType === 'wall') {
+          this.system.setWall(actionVal, 'kiosk');
+        } else if (actionType === 'lighting') {
+          this.system.setLighting(actionVal, 'kiosk');
+        } else if (actionType === 'door') {
+          this.system.toggleDoor();
+        }
+      };
+
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        execute();
+      });
+      btn.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+        execute();
+      });
+      btn.addEventListener('mouseenter', () => btn.setAttribute('scale', '1.06 1.06 1.06'));
       btn.addEventListener('mouseleave', () => btn.setAttribute('scale', '1.0 1.0 1.0'));
     });
   }
@@ -672,6 +688,9 @@ AFRAME.registerComponent('x0014-animated-door', {
     this.panel = this.el.querySelector('#sliding-door-panel');
 
     this.el.addEventListener('click', () => this.system.toggleDoor());
+    if (this.panel) {
+      this.panel.addEventListener('click', () => this.system.toggleDoor());
+    }
     this.onDoorToggled = this.onDoorToggled.bind(this);
     this.el.sceneEl.addEventListener('x0014-door-toggled', this.onDoorToggled);
   },

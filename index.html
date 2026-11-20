@@ -364,11 +364,9 @@
         <!-- Ergonomic Camera Rig (Standing eye level 1.65m) -->
         <a-entity id="rig" position="0 0 1.5" x0014-teleport-controls>
           <a-camera id="head" position="0 1.65 0" look-controls="pointerLockEnabled: false">
-            <a-entity cursor="fuse: false; rayOrigin: mouse"
-                      position="0 0 -1"
-                      geometry="primitive: ring; radiusInner: 0.016; radiusOuter: 0.024"
-                      material="color: #38bdf8; shader: flat; opacity: 0.8"
-                      raycaster="objects: .clickable; interval: 100">
+            <a-entity position="0 0 -1"
+                      geometry="primitive: ring; radiusInner: 0.014; radiusOuter: 0.022"
+                      material="color: #38bdf8; shader: flat; opacity: 0.6">
             </a-entity>
           </a-camera>
         </a-entity>
@@ -553,57 +551,69 @@
           <a-text value="UNIT #414 ARCHITECTURAL BIM SCHEMATIC - BI GROUP GRAND OPERA" position="0 0.68 0.03" align="center" width="2.4" color="#fbbf24"></a-text>
         </a-entity>
 
-        <!-- Ergonomic Touch Configurator Pedestal Inside Foyer -->
+        <!-- Ergonomic Interactive Showroom Kiosk Inside Foyer -->
         <a-entity position="-4.8 0 2.2" rotation="0 60 0">
-          <a-box position="0 0.5 0" width="0.8" height="1.0" depth="0.5" material="color: #0f172a; metalness: 0.6"></a-box>
+          <!-- Slim Modern Floor Base -->
+          <a-box position="0 0.03 0" width="0.85" height="0.06" depth="0.55" material="color: #0b1320; metalness: 0.8; roughness: 0.3"></a-box>
+          <!-- Angled Architectural Support Column (Stands behind screen: Zero Clipping!) -->
+          <a-box position="0 0.52 -0.10" rotation="10 0 0" width="0.26" height="0.98" depth="0.14" material="color: #0f172a; metalness: 0.7; roughness: 0.4"></a-box>
+          <!-- Vertical Cyan LED Accent Strip -->
+          <a-box position="0 0.52 -0.025" rotation="10 0 0" width="0.03" height="0.90" depth="0.01" material="color: #38bdf8; shader: flat"></a-box>
+          <!-- Top Bracket Mount -->
+          <a-box position="0 0.98 -0.05" width="0.45" height="0.06" depth="0.22" material="color: #1e293b; metalness: 0.8"></a-box>
           
-          <!-- High-Contrast Interactive Touch Screen -->
-          <a-entity position="0 1.05 0" rotation="-30 0 0">
-            <a-plane width="1.45" height="0.95" material="color: #070b14; shader: flat"></a-plane>
-            <a-text value="IMMOVISION VR CONFIGURATOR" align="center" position="0 0.38 0.02" width="2.2" color="#38bdf8"></a-text>
-            <a-text value="SELECT FINISH OR LIGHTING TO PREVIEW IN REAL-TIME" align="center" position="0 0.31 0.02" width="1.6" color="#94a3b8"></a-text>
+          <!-- High-Tech OLED Interactive Touch Console (Mounted on Top of Column) -->
+          <a-entity id="foyer-kiosk-console" position="0 1.25 0.05" rotation="-26 0 0" x0014-holographic-palette>
+            <!-- Heavy Casing & Gold Trim Frame -->
+            <a-box position="0 0 -0.02" width="1.52" height="1.02" depth="0.04" material="color: #0f172a; metalness: 0.85; roughness: 0.25"></a-box>
+            <a-box position="0 0 -0.01" width="1.54" height="1.04" depth="0.01" material="color: #fbbf24; metalness: 0.95; roughness: 0.15"></a-box>
+            <!-- OLED Flat Screen Display Face -->
+            <a-plane width="1.48" height="0.98" position="0 0 0.005" material="color: #020617; shader: flat"></a-plane>
             
-            <!-- Flooring Swatches with Clear Bilingual Text -->
-            <a-plane class="pal-btn clickable" data-type="floor" data-value="oak" position="-0.48 0.16 0.02" width="0.28" height="0.14" material="color: #b5885c; shader: flat">
+            <a-text value="IMMOVISION VR CONFIGURATOR" align="center" position="0 0.40 0.015" width="2.3" color="#38bdf8"></a-text>
+            <a-text value="TOUCH ANY FINISH OR LIGHTING TO PREVIEW LIVE" align="center" position="0 0.33 0.015" width="1.6" color="#94a3b8"></a-text>
+            
+            <!-- 1. Flooring Swatches -->
+            <a-plane class="pal-btn clickable" data-type="floor" data-value="oak" position="-0.48 0.19 0.02" width="0.28" height="0.13" material="color: #b5885c; shader: flat">
               <a-text value="Natural Oak" align="center" position="0 0 0.01" width="1.2" color="#ffffff"></a-text>
             </a-plane>
-            <a-plane class="pal-btn clickable" data-type="floor" data-value="walnut" position="-0.16 0.16 0.02" width="0.28" height="0.14" material="color: #4a3222; shader: flat">
+            <a-plane class="pal-btn clickable" data-type="floor" data-value="walnut" position="-0.16 0.19 0.02" width="0.28" height="0.13" material="color: #4a3222; shader: flat">
               <a-text value="Dark Walnut" align="center" position="0 0 0.01" width="1.2" color="#ffffff"></a-text>
             </a-plane>
-            <a-plane class="pal-btn clickable" data-type="floor" data-value="marble" position="0.16 0.16 0.02" width="0.28" height="0.14" material="color: #e2e8f0; shader: flat">
+            <a-plane class="pal-btn clickable" data-type="floor" data-value="marble" position="0.16 0.19 0.02" width="0.28" height="0.13" material="color: #e2e8f0; shader: flat">
               <a-text value="Calacatta" align="center" position="0 0 0.01" width="1.2" color="#0f172a"></a-text>
             </a-plane>
-            <a-plane class="pal-btn clickable" data-type="floor" data-value="slate" position="0.48 0.16 0.02" width="0.28" height="0.14" material="color: #334155; shader: flat">
+            <a-plane class="pal-btn clickable" data-type="floor" data-value="slate" position="0.48 0.19 0.02" width="0.28" height="0.13" material="color: #334155; shader: flat">
               <a-text value="Slate Tile" align="center" position="0 0 0.01" width="1.2" color="#ffffff"></a-text>
             </a-plane>
 
-            <!-- Wall Coatings -->
-            <a-plane class="pal-btn clickable" data-type="wall" data-value="beige" position="-0.48 -0.02 0.02" width="0.28" height="0.14" material="color: #f5f0eb; shader: flat">
+            <!-- 2. Wall Coatings -->
+            <a-plane class="pal-btn clickable" data-type="wall" data-value="beige" position="-0.48 0.02 0.02" width="0.28" height="0.13" material="color: #f5f0eb; shader: flat">
               <a-text value="Alabaster" align="center" position="0 0 0.01" width="1.2" color="#0f172a"></a-text>
             </a-plane>
-            <a-plane class="pal-btn clickable" data-type="wall" data-value="pearl" position="-0.16 -0.02 0.02" width="0.28" height="0.14" material="color: #cbd5e1; shader: flat">
+            <a-plane class="pal-btn clickable" data-type="wall" data-value="pearl" position="-0.16 0.02 0.02" width="0.28" height="0.13" material="color: #cbd5e1; shader: flat">
               <a-text value="Greige" align="center" position="0 0 0.01" width="1.2" color="#0f172a"></a-text>
             </a-plane>
-            <a-plane class="pal-btn clickable" data-type="wall" data-value="sage" position="0.16 -0.02 0.02" width="0.28" height="0.14" material="color: #65a30d; shader: flat">
+            <a-plane class="pal-btn clickable" data-type="wall" data-value="sage" position="0.16 0.02 0.02" width="0.28" height="0.13" material="color: #65a30d; shader: flat">
               <a-text value="Nordic Sage" align="center" position="0 0 0.01" width="1.2" color="#ffffff"></a-text>
             </a-plane>
-            <a-plane class="pal-btn clickable" data-type="wall" data-value="navy" position="0.48 -0.02 0.02" width="0.28" height="0.14" material="color: #1e3a8a; shader: flat">
+            <a-plane class="pal-btn clickable" data-type="wall" data-value="navy" position="0.48 0.02 0.02" width="0.28" height="0.13" material="color: #1e3a8a; shader: flat">
               <a-text value="Midnight" align="center" position="0 0 0.01" width="1.2" color="#ffffff"></a-text>
             </a-plane>
 
-            <!-- Lighting Presets -->
-            <a-plane class="pal-btn clickable" data-type="lighting" data-value="day" position="-0.38 -0.20 0.02" width="0.34" height="0.12" material="color: #0284c7; shader: flat">
+            <!-- 3. Lighting Presets -->
+            <a-plane class="pal-btn clickable" data-type="lighting" data-value="day" position="-0.38 -0.15 0.02" width="0.34" height="0.12" material="color: #0284c7; shader: flat">
               <a-text value="Day 5500K" align="center" position="0 0 0.01" width="1.3" color="#ffffff"></a-text>
             </a-plane>
-            <a-plane class="pal-btn clickable" data-type="lighting" data-value="evening" position="0 -0.20 0.02" width="0.34" height="0.12" material="color: #ea580c; shader: flat">
+            <a-plane class="pal-btn clickable" data-type="lighting" data-value="evening" position="0 -0.15 0.02" width="0.34" height="0.12" material="color: #ea580c; shader: flat">
               <a-text value="Sunset 3200K" align="center" position="0 0 0.01" width="1.3" color="#ffffff"></a-text>
             </a-plane>
-            <a-plane class="pal-btn clickable" data-type="lighting" data-value="night" position="0.38 -0.20 0.02" width="0.34" height="0.12" material="color: #312e81; shader: flat">
+            <a-plane class="pal-btn clickable" data-type="lighting" data-value="night" position="0.38 -0.15 0.02" width="0.34" height="0.12" material="color: #312e81; shader: flat">
               <a-text value="Night Stars" align="center" position="0 0 0.01" width="1.3" color="#ffffff"></a-text>
             </a-plane>
 
-            <!-- Terrace Sliding Door Trigger Button -->
-            <a-plane class="pal-btn clickable" data-type="door" data-value="toggle" position="0 -0.38 0.025" width="1.30" height="0.09" material="color: #059669; shader: flat">
+            <!-- 4. Terrace Sliding Door Trigger Button -->
+            <a-plane class="pal-btn clickable" data-type="door" data-value="toggle" position="0 -0.33 0.02" width="1.34" height="0.11" material="color: #059669; shader: flat">
               <a-text value="[SLIDE BALCONY TERRACE DOOR OPEN / CLOSE]" align="center" position="0 0 0.01" width="1.8" color="#ffffff"></a-text>
             </a-plane>
           </a-entity>
