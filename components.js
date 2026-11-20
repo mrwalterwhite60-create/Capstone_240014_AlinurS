@@ -128,7 +128,13 @@ AFRAME.registerSystem('x0014-immovision-system', {
   setLighting: function (lightKey, source = 'ui') {
     if (!this.finishCatalog.lighting[lightKey]) return;
     this.state.lighting = lightKey;
-    if (source === 'fallback') this.state.fallbackUsed = true;
+    
+    // Direct trigger on lighting controller component
+    const lightCtrl = document.querySelector('[x0014-lighting-controller]');
+    if (lightCtrl && lightCtrl.components['x0014-lighting-controller']) {
+      lightCtrl.components['x0014-lighting-controller'].applyLighting(lightKey);
+    }
+    window.dispatchEvent(new CustomEvent('immovision-lighting-changed', { detail: { value: lightKey, source: source } }));
     this.el.emit('x0014-lighting-changed', { value: lightKey, source: source });
     this.updateHUD();
   },
@@ -454,80 +460,108 @@ AFRAME.registerComponent('x0014-lighting-controller', {
     this.system = this.el.sceneEl.systems['x0014-immovision-system'];
     this.sunLight = document.querySelector('#sun-light');
     this.ambientLight = document.querySelector('#ambient-light');
-    this.interiorFill = document.querySelector('#interior-fill');
-    this.spotLights = document.querySelectorAll('.indoor-spot');
-    this.skyPanorama = document.querySelector('#skyline-panorama');
-
-    this.loader = new THREE.TextureLoader();
-    this.skyDayTex = this.loader.load('textures/skyline_day.png');
-    this.skyNightTex = this.loader.load('textures/skyline_night.png');
+    this.lightChandelier = document.querySelector('#light-chandelier');
+    this.lightKitchen = document.querySelector('#light-kitchen');
+    this.lightBedroom = document.querySelector('#light-bedroom');
+    this.skyEl = document.querySelector('#sky-environment') || document.querySelector('a-sky');
 
     this.onLightingChanged = this.onLightingChanged.bind(this);
     this.el.sceneEl.addEventListener('x0014-lighting-changed', this.onLightingChanged);
-    this.applyLighting(this.system.state.lighting);
+    window.addEventListener('immovision-lighting-changed', this.onLightingChanged);
+
+    if (this.system && this.system.state) {
+      this.applyLighting(this.system.state.lighting || 'day');
+    }
   },
 
   onLightingChanged: function (evt) {
-    this.applyLighting(evt.detail.value);
+    const val = (evt && evt.detail) ? (evt.detail.value || evt.detail.lighting) : 'day';
+    this.applyLighting(val);
   },
 
   applyLighting: function (mode) {
+    if (!this.sunLight) this.sunLight = document.querySelector('#sun-light');
+    if (!this.ambientLight) this.ambientLight = document.querySelector('#ambient-light');
+    if (!this.lightChandelier) this.lightChandelier = document.querySelector('#light-chandelier');
+    if (!this.lightKitchen) this.lightKitchen = document.querySelector('#light-kitchen');
+    if (!this.lightBedroom) this.lightBedroom = document.querySelector('#light-bedroom');
+    if (!this.skyEl) this.skyEl = document.querySelector('#sky-environment') || document.querySelector('a-sky');
+
     if (mode === 'day') {
       if (this.sunLight) {
-        this.sunLight.setAttribute('light', 'type: directional; color: #fff8eb; intensity: 0.95');
+        this.sunLight.setAttribute('light', {
+          type: 'directional',
+          color: '#fffaf0',
+          intensity: 1.15
+        });
+        this.sunLight.setAttribute('position', '5 9 3');
       }
       if (this.ambientLight) {
-        this.ambientLight.setAttribute('light', 'type: ambient; color: #e2e8f0; intensity: 0.45');
+        this.ambientLight.setAttribute('light', {
+          type: 'ambient',
+          color: '#e2e8f0',
+          intensity: 0.55
+        });
       }
-      if (this.interiorFill) {
-        this.interiorFill.setAttribute('light', 'type: point; color: #ffeed5; intensity: 0.7; distance: 14; decay: 1.5');
-      }
-      this.spotLights.forEach(spot => {
-        spot.setAttribute('light', 'intensity: 0.5; color: #fff4e0');
-      });
-      if (this.skyPanorama && this.skyPanorama.getObject3D('mesh')) {
-        this.skyPanorama.getObject3D('mesh').material.map = this.skyDayTex;
-        this.skyPanorama.getObject3D('mesh').material.needsUpdate = true;
+      if (this.lightChandelier) this.lightChandelier.setAttribute('light', { intensity: 0.5, color: '#ffeedd' });
+      if (this.lightKitchen) this.lightKitchen.setAttribute('light', { intensity: 0.5, color: '#ffffff' });
+      if (this.lightBedroom) this.lightBedroom.setAttribute('light', { intensity: 0.4, color: '#ffe8cc' });
+      if (this.skyEl) {
+        this.skyEl.setAttribute('src', '#tex-sky-day');
+        this.skyEl.setAttribute('material', { color: '#ffffff', opacity: 1.0 });
       }
     } else if (mode === 'evening') {
       if (this.sunLight) {
-        this.sunLight.setAttribute('light', 'type: directional; color: #ff8c2b; intensity: 0.9');
+        this.sunLight.setAttribute('light', {
+          type: 'directional',
+          color: '#f97316',
+          intensity: 1.05
+        });
+        this.sunLight.setAttribute('position', '8 3.5 5');
       }
       if (this.ambientLight) {
-        this.ambientLight.setAttribute('light', 'type: ambient; color: #edd2b8; intensity: 0.4');
+        this.ambientLight.setAttribute('light', {
+          type: 'ambient',
+          color: '#fed7aa',
+          intensity: 0.45
+        });
       }
-      if (this.interiorFill) {
-        this.interiorFill.setAttribute('light', 'type: point; color: #ffd699; intensity: 0.8; distance: 14; decay: 1.5');
-      }
-      this.spotLights.forEach(spot => {
-        spot.setAttribute('light', 'intensity: 0.8; color: #ffdca8');
-      });
-      if (this.skyPanorama && this.skyPanorama.getObject3D('mesh')) {
-        this.skyPanorama.getObject3D('mesh').material.map = this.skyDayTex;
-        this.skyPanorama.getObject3D('mesh').material.needsUpdate = true;
+      if (this.lightChandelier) this.lightChandelier.setAttribute('light', { intensity: 0.95, color: '#fed7aa' });
+      if (this.lightKitchen) this.lightKitchen.setAttribute('light', { intensity: 0.8, color: '#fde68a' });
+      if (this.lightBedroom) this.lightBedroom.setAttribute('light', { intensity: 0.75, color: '#fed7aa' });
+      if (this.skyEl) {
+        this.skyEl.setAttribute('src', '#tex-sky-day');
+        this.skyEl.setAttribute('material', { color: '#fb923c', opacity: 1.0 });
       }
     } else if (mode === 'night') {
       if (this.sunLight) {
-        this.sunLight.setAttribute('light', 'type: directional; color: #2a3b52; intensity: 0.15');
+        this.sunLight.setAttribute('light', {
+          type: 'directional',
+          color: '#1e3a8a',
+          intensity: 0.12
+        });
+        this.sunLight.setAttribute('position', '2 7 2');
       }
       if (this.ambientLight) {
-        this.ambientLight.setAttribute('light', 'type: ambient; color: #162033; intensity: 0.3');
+        this.ambientLight.setAttribute('light', {
+          type: 'ambient',
+          color: '#090d16',
+          intensity: 0.25
+        });
       }
-      if (this.interiorFill) {
-        this.interiorFill.setAttribute('light', 'type: point; color: #ffe5bf; intensity: 1.1; distance: 14; decay: 1.5');
-      }
-      this.spotLights.forEach(spot => {
-        spot.setAttribute('light', 'intensity: 1.2; color: #ffe0b3');
-      });
-      if (this.skyPanorama && this.skyPanorama.getObject3D('mesh')) {
-        this.skyPanorama.getObject3D('mesh').material.map = this.skyNightTex;
-        this.skyPanorama.getObject3D('mesh').material.needsUpdate = true;
+      if (this.lightChandelier) this.lightChandelier.setAttribute('light', { intensity: 1.4, distance: 9, decay: 1.8, color: '#ffedd5' });
+      if (this.lightKitchen) this.lightKitchen.setAttribute('light', { intensity: 1.1, distance: 5, decay: 1.8, color: '#fef08a' });
+      if (this.lightBedroom) this.lightBedroom.setAttribute('light', { intensity: 1.0, distance: 6, decay: 1.8, color: '#fed7aa' });
+      if (this.skyEl) {
+        this.skyEl.setAttribute('src', '#tex-sky-night');
+        this.skyEl.setAttribute('material', { color: '#cbd5e1', opacity: 1.0 });
       }
     }
   },
 
   remove: function () {
     this.el.sceneEl.removeEventListener('x0014-lighting-changed', this.onLightingChanged);
+    window.removeEventListener('immovision-lighting-changed', this.onLightingChanged);
   }
 });
 

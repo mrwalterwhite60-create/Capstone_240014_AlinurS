@@ -12,7 +12,7 @@
   <script src="https://aframe.io/releases/1.8.0/aframe.min.js"></script>
   
   <!-- Custom Prefixed WebXR Components (x0014-) -->
-  <script src="components.js?v=2.5.1"></script>
+  <script src="components.js?v=2.5.2"></script>
   
   <style>
     :root {
@@ -349,16 +349,16 @@
         </a-assets>
 
         <!-- Dynamic Architectural Lighting Scheme -->
-        <a-entity id="lighting-rig">
-          <a-light id="sun-light" type="directional" position="5 9 3" intensity="1.2" color="#fffaf0"></a-light>
+        <a-entity id="lighting-rig" x0014-lighting-controller>
+          <a-light id="sun-light" type="directional" position="5 9 3" intensity="1.15" color="#fffaf0"></a-light>
           <a-light id="ambient-light" type="ambient" intensity="0.55" color="#e2e8f0"></a-light>
           
           <!-- Chandelier Warm Light -->
-          <a-light type="point" position="0 2.4 -1.0" intensity="0.6" distance="7" decay="2" color="#ffeedd"></a-light>
+          <a-light id="light-chandelier" type="point" position="0 2.4 -1.0" intensity="0.6" distance="8" decay="2" color="#ffeedd"></a-light>
           <!-- Kitchen Under-Cabinet LED Strip -->
-          <a-light type="point" position="-5.2 2.2 -3.4" intensity="0.5" distance="4" decay="2" color="#ffffff"></a-light>
+          <a-light id="light-kitchen" type="point" position="-5.2 2.2 -3.4" intensity="0.5" distance="5" decay="2" color="#ffffff"></a-light>
           <!-- Bedroom Sconce Light -->
-          <a-light type="point" position="5.2 2.1 -2.5" intensity="0.45" distance="4" decay="2" color="#ffe8cc"></a-light>
+          <a-light id="light-bedroom" type="point" position="5.2 2.1 -2.5" intensity="0.45" distance="5" decay="2" color="#ffe8cc"></a-light>
         </a-entity>
 
         <!-- Panoramic Astana Baiterek Skyline -->
