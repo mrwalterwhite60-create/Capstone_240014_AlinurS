@@ -216,7 +216,7 @@ AFRAME.registerSystem('x0014-immovision-system', {
 AFRAME.registerComponent('x0014-voice-configurator', {
   schema: {
     enabled: { type: 'boolean', default: true },
-    lang: { type: 'string', default: 'en-US' },
+    lang: { type: 'string', default: 'ru-RU' },
     synthFeedback: { type: 'boolean', default: true }
   },
 
@@ -228,33 +228,37 @@ AFRAME.registerComponent('x0014-voice-configurator', {
     this.lastTranscript = '';
     this.speechSynthesis = window.speechSynthesis || null;
 
+    // Detect browser language: default to ru-RU if Russian/Kazakh
+    const navLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+    this.currentLang = (navLang.startsWith('ru') || navLang.startsWith('kk')) ? 'ru-RU' : 'en-US';
+
     this.inWorldSubtitle = document.querySelector('#in-world-subtitles');
     this.screenSubtitle = document.getElementById('voice-subtitles');
 
     this.intentCatalog = [
-      { type: 'floor', value: 'oak', patterns: [/\b(oak|natural wood|light wood|parquet)\b/i, /\b(дуб|светлый дуб|дерево|паркет|ламинат)\b/i] },
-      { type: 'floor', value: 'walnut', patterns: [/\b(walnut|dark wood|dark oak|hardwood)\b/i, /\b(орех|темный дуб|темное дерево|темный пол)\b/i] },
-      { type: 'floor', value: 'marble', patterns: [/\b(marble|calacatta|white stone|tile)\b/i, /\b(мрамор|белый мрамор|камень)\b/i] },
-      { type: 'floor', value: 'slate', patterns: [/\b(slate|charcoal|dark tile|grey tile)\b/i, /\b(плитка|сланец|серая плитка)\b/i] },
+      { type: 'floor', value: 'oak', patterns: [/\b(oak|natural wood|light wood|parquet)\b/i, /\b(дуб|светлый дуб|дерево|паркет|ламинат|светлый пол)\b/i] },
+      { type: 'floor', value: 'walnut', patterns: [/\b(walnut|dark wood|dark oak|hardwood)\b/i, /\b(орех|темный дуб|темное дерево|темный пол|шоколадный)\b/i] },
+      { type: 'floor', value: 'marble', patterns: [/\b(marble|calacatta|white stone|tile)\b/i, /\b(мрамор|белый мрамор|камень|белый пол)\b/i] },
+      { type: 'floor', value: 'slate', patterns: [/\b(slate|charcoal|dark tile|grey tile)\b/i, /\b(плитка|сланец|серая плитка|темная плитка|черная плитка)\b/i] },
 
-      { type: 'wall', value: 'beige', patterns: [/\b(beige|warm wall|alabaster|light wall)\b/i, /\b(бежевый|теплый|песочный|бежевые стены)\b/i] },
-      { type: 'wall', value: 'pearl', patterns: [/\b(pearl|white wall|cool wall|grey wall)\b/i, /\b(белый|жемчужный|светлые стены)\b/i] },
-      { type: 'wall', value: 'sage', patterns: [/\b(sage|green wall|olive|mint)\b/i, /\b(шалфей|зеленый|оливковый|зеленые стены)\b/i] },
-      { type: 'wall', value: 'navy', patterns: [/\b(navy|blue wall|dark wall|accent wall)\b/i, /\b(синий|темная стена|акцентная стена|синие стены)\b/i] },
+      { type: 'wall', value: 'beige', patterns: [/\b(beige|warm wall|alabaster|light wall)\b/i, /\b(бежевый|теплый|песочный|бежевые стены|светлые стены)\b/i] },
+      { type: 'wall', value: 'pearl', patterns: [/\b(pearl|white wall|cool wall|grey wall)\b/i, /\b(белый|жемчужный|белые стены|серый|серые стены)\b/i] },
+      { type: 'wall', value: 'sage', patterns: [/\b(sage|green wall|olive|mint)\b/i, /\b(шалфей|зеленый|оливковый|зеленые стены|мята)\b/i] },
+      { type: 'wall', value: 'navy', patterns: [/\b(navy|blue wall|dark wall|accent wall)\b/i, /\b(синий|темная стена|акцентная стена|синие стены|темный)\b/i] },
 
-      { type: 'lighting', value: 'day', patterns: [/\b(day|daylight|morning|sun|sunlight)\b/i, /\b(день|дневной|солнце|утро|дневной свет)\b/i] },
+      { type: 'lighting', value: 'day', patterns: [/\b(day|daylight|morning|sun|sunlight)\b/i, /\b(день|дневной|солнце|утро|дневной свет|светло)\b/i] },
       { type: 'lighting', value: 'evening', patterns: [/\b(evening|sunset|golden hour|dusk)\b/i, /\b(вечер|закат|золотой|сумерки|вечерний свет)\b/i] },
-      { type: 'lighting', value: 'night', patterns: [/\b(night|lights off|dark mode|city lights)\b/i, /\b(ночь|ночной|город|ночной свет)\b/i] },
+      { type: 'lighting', value: 'night', patterns: [/\b(night|lights off|dark mode|city lights)\b/i, /\b(ночь|ночной|город|ночной свет|темнота|люстра)\b/i] },
 
-      { type: 'nav', value: 'foyer', patterns: [/\b(foyer|entrance|hall|start)\b/i, /\b(прихожая|вход|начало)\b/i] },
-      { type: 'nav', value: 'living', patterns: [/\b(living room|lounge|salon|sofa)\b/i, /\b(гостиная|зал)\b/i] },
-      { type: 'nav', value: 'kitchen', patterns: [/\b(kitchen|dining|cooking)\b/i, /\b(кухня|обеденная)\b/i] },
+      { type: 'nav', value: 'foyer', patterns: [/\b(foyer|entrance|hall|start)\b/i, /\b(прихожая|вход|начало|коридор)\b/i] },
+      { type: 'nav', value: 'living', patterns: [/\b(living room|lounge|salon|sofa)\b/i, /\b(гостиная|зал|диван)\b/i] },
+      { type: 'nav', value: 'kitchen', patterns: [/\b(kitchen|dining|cooking)\b/i, /\b(кухня|обеденная|плита)\b/i] },
       { type: 'nav', value: 'bedroom', patterns: [/\b(bedroom|master bedroom|bed)\b/i, /\b(спальня|кровать)\b/i] },
-      { type: 'nav', value: 'balcony', patterns: [/\b(balcony|terrace|outside|view)\b/i, /\b(балкон|терраса|вид)\b/i] },
+      { type: 'nav', value: 'balcony', patterns: [/\b(balcony|terrace|outside|view)\b/i, /\b(балкон|терраса|вид|панорама)\b/i] },
 
-      { type: 'action', value: 'door', patterns: [/\b(open door|close door|toggle door|terrace door)\b/i, /\b(открой дверь|закрой дверь|дверь)\b/i] },
-      { type: 'action', value: 'summary', patterns: [/\b(summary|price|cost|quote|how much)\b/i, /\b(цена|стоимость|смета|итог)\b/i] },
-      { type: 'action', value: 'reset', patterns: [/\b(reset|default|restore)\b/i, /\b(сброс|стандарт|верни)\b/i] }
+      { type: 'action', value: 'door', patterns: [/\b(open door|close door|toggle door|terrace door)\b/i, /\b(открой дверь|закрой дверь|дверь|балконная дверь)\b/i] },
+      { type: 'action', value: 'summary', patterns: [/\b(summary|price|cost|quote|how much)\b/i, /\b(цена|стоимость|смета|итог|сколько)\b/i] },
+      { type: 'action', value: 'reset', patterns: [/\b(reset|default|restore)\b/i, /\b(сброс|стандарт|верни|начальная)\b/i] }
     ];
 
     this.setupSpeechRecognition();
@@ -263,8 +267,9 @@ AFRAME.registerComponent('x0014-voice-configurator', {
   setupSpeechRecognition: function () {
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRec) {
-      this.displaySubtitle('Speech recognition unsupported. 3D Holographic Touch Palette is ready.', true);
+      this.displaySubtitle('Speech recognition unsupported in this browser. Touch controls active.', true);
       this.system.state.fallbackUsed = true;
+      this.updateMicBadge(false, 'Unsupported');
       return;
     }
 
@@ -272,13 +277,16 @@ AFRAME.registerComponent('x0014-voice-configurator', {
       this.recognition = new SpeechRec();
       this.recognition.continuous = true;
       this.recognition.interimResults = false;
-      this.recognition.lang = this.data.lang;
+      this.recognition.lang = this.currentLang || 'ru-RU';
 
       this.recognition.onstart = () => {
         this.isListening = true;
         this.micGranted = true;
         this.system.state.voiceActive = true;
-        this.displaySubtitle('Microphone Active: Speak commands (e.g., "Dark oak floor", "Calacatta marble", "Night mode").');
+        const hint = this.currentLang.startsWith('ru') 
+          ? 'Микрофон АКТИВЕН! Говорите: "Мрамор", "Дуб", "Закат", "Ночь", "Балкон"'
+          : 'Microphone ACTIVE! Speak: "Marble", "Oak floor", "Night mode", "Terrace"';
+        this.displaySubtitle(hint);
         this.updateMicBadge(true);
       };
 
@@ -289,18 +297,27 @@ AFRAME.registerComponent('x0014-voice-configurator', {
       };
 
       this.recognition.onerror = (err) => {
+        console.warn('Speech recognition error:', err.error);
         if (err.error === 'not-allowed') {
           this.micGranted = false;
-          this.displaySubtitle('Microphone permission denied. Tactile 3D Fallback Palette active.', true);
+          this.isListening = false;
+          const msg = this.currentLang.startsWith('ru')
+            ? 'Доступ к микрофону отклонен в браузере. Нажмите на значок микрофона в строке браузера и разрешите доступ!'
+            : 'Microphone permission denied. Allow mic access in browser address bar!';
+          this.displaySubtitle(msg, true);
           this.system.state.fallbackUsed = true;
           this.updateMicBadge(false, 'Denied');
+        } else if (err.error === 'no-speech') {
+          // Timeout with no speech on mobile, remain ready
         }
       };
 
       this.recognition.onend = () => {
         this.isListening = false;
-        if (this.micGranted && this.data.enabled) {
+        if (this.micGranted && this.userWantsListening) {
           try { this.recognition.start(); } catch (e) {}
+        } else {
+          this.updateMicBadge(false, 'Ready');
         }
       };
     } catch (e) {
@@ -309,9 +326,57 @@ AFRAME.registerComponent('x0014-voice-configurator', {
   },
 
   startListening: function () {
-    if (this.recognition && !this.isListening) {
-      try { this.recognition.start(); } catch (e) {}
+    if (!this.recognition) this.setupSpeechRecognition();
+    if (this.recognition) {
+      try {
+        this.userWantsListening = true;
+        this.recognition.lang = this.currentLang || 'ru-RU';
+        this.recognition.start();
+        this.isListening = true;
+        this.updateMicBadge(true);
+      } catch (e) {
+        // already started or transitioning
+      }
     }
+  },
+
+  stopListening: function () {
+    this.userWantsListening = false;
+    if (this.recognition && this.isListening) {
+      try {
+        this.recognition.stop();
+      } catch (e) {}
+    }
+    this.isListening = false;
+    this.updateMicBadge(false, 'Paused');
+  },
+
+  toggleListening: function () {
+    if (this.isListening) {
+      this.stopListening();
+    } else {
+      this.startListening();
+    }
+  },
+
+  toggleLanguage: function () {
+    this.currentLang = this.currentLang === 'ru-RU' ? 'en-US' : 'ru-RU';
+    if (this.recognition) {
+      this.recognition.lang = this.currentLang;
+      if (this.isListening) {
+        try {
+          this.recognition.stop();
+          setTimeout(() => this.startListening(), 150);
+        } catch(e) {}
+      }
+    }
+    const langLabel = this.currentLang === 'ru-RU' ? 'РУС' : 'ENG';
+    const hint = this.currentLang === 'ru-RU' 
+      ? 'Язык: РУССКИЙ. Говорите: "Дуб", "Мрамор", "Ночь", "Закат", "Балкон"'
+      : 'Language: ENGLISH. Speak: "Oak", "Marble", "Night", "Sunset", "Balcony"';
+    this.displaySubtitle(hint);
+    this.updateMicBadge(this.isListening);
+    return langLabel;
   },
 
   processSpokenCommand: function (transcript) {
@@ -333,23 +398,49 @@ AFRAME.registerComponent('x0014-voice-configurator', {
       return;
     }
 
-    this.displaySubtitle(`Unrecognized: "${transcript}". Try saying "Oak floor", "Marble", or "Night mode".`, true);
-    this.speakFeedback("Command not recognized. Please try saying oak floor, marble, or night mode.");
+    const unrec = this.currentLang === 'ru-RU'
+      ? `Не распознано: "${transcript}". Попробуйте: "Мрамор", "Дуб", "Ночь", "Закат"`
+      : `Unrecognized: "${transcript}". Try saying: "Oak floor", "Marble", "Night mode"`;
+    this.displaySubtitle(unrec, true);
+    this.speakFeedback(this.currentLang === 'ru-RU' ? "Команда не распознана. Попробуйте сказать мрамор, дуб или ночь." : "Command not recognized. Please try saying oak floor, marble, or night mode.");
   },
 
   checkFuzzyIntent: function (text) {
     const keywords = [
       { word: 'oak', type: 'floor', value: 'oak' },
+      { word: 'дуб', type: 'floor', value: 'oak' },
+      { word: 'дерево', type: 'floor', value: 'oak' },
       { word: 'walnut', type: 'floor', value: 'walnut' },
+      { word: 'орех', type: 'floor', value: 'walnut' },
       { word: 'marble', type: 'floor', value: 'marble' },
+      { word: 'мрамор', type: 'floor', value: 'marble' },
+      { word: 'камень', type: 'floor', value: 'marble' },
       { word: 'slate', type: 'floor', value: 'slate' },
+      { word: 'сланец', type: 'floor', value: 'slate' },
+      { word: 'плитка', type: 'floor', value: 'slate' },
       { word: 'beige', type: 'wall', value: 'beige' },
+      { word: 'бежевый', type: 'wall', value: 'beige' },
       { word: 'pearl', type: 'wall', value: 'pearl' },
+      { word: 'белый', type: 'wall', value: 'pearl' },
+      { word: 'серый', type: 'wall', value: 'pearl' },
       { word: 'sage', type: 'wall', value: 'sage' },
+      { word: 'шалфей', type: 'wall', value: 'sage' },
+      { word: 'зеленый', type: 'wall', value: 'sage' },
       { word: 'navy', type: 'wall', value: 'navy' },
+      { word: 'синий', type: 'wall', value: 'navy' },
       { word: 'day', type: 'lighting', value: 'day' },
+      { word: 'день', type: 'lighting', value: 'day' },
+      { word: 'утро', type: 'lighting', value: 'day' },
       { word: 'evening', type: 'lighting', value: 'evening' },
-      { word: 'night', type: 'lighting', value: 'night' }
+      { word: 'закат', type: 'lighting', value: 'evening' },
+      { word: 'вечер', type: 'lighting', value: 'evening' },
+      { word: 'night', type: 'lighting', value: 'night' },
+      { word: 'ночь', type: 'lighting', value: 'night' },
+      { word: 'балкон', type: 'nav', value: 'balcony' },
+      { word: 'терраса', type: 'nav', value: 'balcony' },
+      { word: 'кухня', type: 'nav', value: 'kitchen' },
+      { word: 'спальня', type: 'nav', value: 'bedroom' },
+      { word: 'гостиная', type: 'nav', value: 'living' }
     ];
     for (const item of keywords) {
       if (this.levenshtein(text, item.word) <= 2) return item;
@@ -446,8 +537,22 @@ AFRAME.registerComponent('x0014-voice-configurator', {
   updateMicBadge: function (isActive, label = '') {
     const badge = document.getElementById('mic-badge');
     if (badge) {
-      badge.textContent = isActive ? 'MIC: ACTIVE' : `MIC: ${label || 'STANDBY'}`;
-      badge.style.backgroundColor = isActive ? 'rgba(34, 197, 94, 0.85)' : 'rgba(239, 68, 68, 0.85)';
+      const isRu = (this.currentLang && this.currentLang.startsWith('ru'));
+      const langStr = isRu ? 'RU' : 'EN';
+      if (isActive) {
+        badge.innerHTML = `🎙️ <span style="font-weight: 800; color: #fff;">● REC [${langStr}]</span>`;
+        badge.style.backgroundColor = 'rgba(239, 68, 68, 0.9)';
+        badge.style.borderColor = '#ef4444';
+        badge.style.color = '#ffffff';
+        badge.style.boxShadow = '0 0 14px rgba(239, 68, 68, 0.7)';
+      } else {
+        const textLabel = label ? label : (isRu ? 'ТАПНИ ДЛЯ РЕЧИ' : 'TAP TO SPEAK');
+        badge.innerHTML = `🎙️ <span>${textLabel}</span> <span style="opacity: 0.7; font-size: 9px; margin-left: 4px;">[${langStr}]</span>`;
+        badge.style.backgroundColor = 'rgba(15, 23, 42, 0.88)';
+        badge.style.borderColor = 'rgba(56, 189, 248, 0.6)';
+        badge.style.color = '#38bdf8';
+        badge.style.boxShadow = '0 0 10px rgba(56, 189, 248, 0.3)';
+      }
     }
   }
 });
@@ -1007,6 +1112,92 @@ AFRAME.registerComponent('x0014-animated-fan', {
           <a-cylinder position="-0.85 1.45 0.04" radius="0.015" height="0.8" material="color: #f8fafc; metalness: 0.9"></a-cylinder>
         `;
         el.appendChild(group);
+      }
+    }
+  });
+
+  /* =========================================================================
+     12. COMPONENT: x0014-mobile-walk-controls
+     Enables smooth first-person walking on touchscreens via virtual D-Pad
+     ========================================================================= */
+  AFRAME.registerComponent('x0014-mobile-walk-controls', {
+    init: function () {
+      this.rig = document.querySelector('#rig');
+      this.head = document.querySelector('#head');
+      this.moveVector = { forward: 0, right: 0 };
+      this.speed = 2.4; // m/s
+      this.clock = new THREE.Clock();
+
+      const bindBtn = (id, forwardVal, rightVal) => {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+        
+        const startMove = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.moveVector.forward = forwardVal;
+          this.moveVector.right = rightVal;
+          btn.classList.add('active');
+        };
+        
+        const stopMove = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.moveVector.forward = 0;
+          this.moveVector.right = 0;
+          btn.classList.remove('active');
+        };
+
+        btn.addEventListener('touchstart', startMove, { passive: false });
+        btn.addEventListener('touchend', stopMove, { passive: false });
+        btn.addEventListener('touchcancel', stopMove, { passive: false });
+        btn.addEventListener('mousedown', startMove);
+        btn.addEventListener('mouseup', stopMove);
+        btn.addEventListener('mouseleave', stopMove);
+      };
+
+      bindBtn('m-walk-up', 1, 0);
+      bindBtn('m-walk-down', -1, 0);
+      bindBtn('m-walk-left', 0, -1);
+      bindBtn('m-walk-right', 0, 1);
+    },
+
+    tick: function (time, delta) {
+      if (!this.rig || !this.head) return;
+      if (this.moveVector.forward === 0 && this.moveVector.right === 0) return;
+
+      const dt = Math.min((delta || 16) / 1000, 0.1);
+      const cameraObj = this.head.object3D;
+      const rigObj = this.rig.object3D;
+
+      // Get camera yaw angle
+      const rotation = new THREE.Euler(0, 0, 0, 'YXZ');
+      rotation.setFromQuaternion(cameraObj.quaternion);
+      const yaw = rotation.y;
+
+      // Forward vector in XZ plane
+      const forwardX = -Math.sin(yaw);
+      const forwardZ = -Math.cos(yaw);
+
+      // Right vector in XZ plane
+      const rightX = Math.cos(yaw);
+      const rightZ = -Math.sin(yaw);
+
+      const step = this.speed * dt;
+      const dx = (forwardX * this.moveVector.forward + rightX * this.moveVector.right) * step;
+      const dz = (forwardZ * this.moveVector.forward + rightZ * this.moveVector.right) * step;
+
+      // Apartment perimeter bounds
+      const nextX = Math.max(-6.5, Math.min(6.5, rigObj.position.x + dx));
+      const nextZ = Math.max(-5.5, Math.min(7.2, rigObj.position.z + dz));
+
+      rigObj.position.x = nextX;
+      rigObj.position.z = nextZ;
+
+      // Notify system of position change for radar and rooms
+      const sys = this.el.sceneEl ? this.el.sceneEl.systems['x0014-immovision-system'] : null;
+      if (sys && sys.checkRoomTransition) {
+        sys.checkRoomTransition(nextX, nextZ);
       }
     }
   });

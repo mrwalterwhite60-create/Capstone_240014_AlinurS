@@ -12,7 +12,7 @@
   <script src="https://aframe.io/releases/1.8.0/aframe.min.js"></script>
   
   <!-- Custom Prefixed WebXR Components (x0014-) -->
-  <script src="components.js?v=2.5.2"></script>
+  <script src="components.js?v=2.6.0"></script>
   
   <style>
     :root {
@@ -269,6 +269,229 @@
 
     /* VR Scene styling overrides */
     a-scene { width: 100%; height: 100%; display: block; }
+
+    /* Interactive Mic Badge */
+    #mic-badge {
+      pointer-events: auto !important;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    #mic-badge:hover {
+      transform: scale(1.04);
+      filter: brightness(1.15);
+    }
+    #mic-badge:active {
+      transform: scale(0.96);
+    }
+    #mic-lang-btn {
+      background: rgba(56, 189, 248, 0.25);
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      padding: 1px 5px;
+      border-radius: 4px;
+      margin-left: 5px;
+      font-size: 9px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    #voice-subtitles {
+      pointer-events: auto !important;
+      cursor: pointer;
+    }
+
+    /* On-screen Mobile Touch Walk Controls */
+    #mobile-walk-controls {
+      display: none;
+      position: absolute;
+      bottom: 84px;
+      left: 14px;
+      z-index: 60;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+    }
+    .m-walk-btn {
+      width: 44px;
+      height: 44px;
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      border-radius: 12px;
+      color: #38bdf8;
+      font-size: 18px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      touch-action: none;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+      transition: background 0.15s, transform 0.1s;
+    }
+    .m-walk-btn:active, .m-walk-btn.active {
+      background: rgba(56, 189, 248, 0.45);
+      color: #ffffff;
+      transform: scale(0.92);
+    }
+    .m-walk-row {
+      display: flex;
+      gap: 4px;
+      margin-top: 3px;
+    }
+
+    /* =========================================================================
+       MOBILE RESPONSIVE ADAPTATIONS (<= 768px - Phones & Tablets)
+       ========================================================================= */
+    @media (max-width: 768px) {
+      /* 1. Header */
+      #platform-header {
+        height: auto;
+        min-height: 48px;
+        padding: 6px 10px;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .brand-group {
+        gap: 6px;
+      }
+      .brand-logo {
+        font-size: 12px;
+      }
+      .brand-badge {
+        display: none !important;
+      }
+      .nav-tabs {
+        order: 3;
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+        gap: 4px;
+        scrollbar-width: none;
+      }
+      .nav-tabs::-webkit-scrollbar { display: none; }
+      .nav-tab-btn {
+        padding: 5px 8px;
+        font-size: 10.5px;
+        flex-shrink: 0;
+      }
+      .btn-launch-vr {
+        padding: 5px 9px;
+        font-size: 10.5px;
+      }
+      #platform-content {
+        top: 82px;
+      }
+
+      /* 2. HUD Info box */
+      #hud-status {
+        top: 8px;
+        left: 8px;
+        max-width: 195px;
+        padding: 6px 8px;
+        font-size: 9px;
+        line-height: 1.35;
+        border-radius: 6px;
+        pointer-events: auto !important;
+        cursor: pointer;
+      }
+      #hud-status .hud-details {
+        display: none;
+      }
+      #hud-status.expanded .hud-details {
+        display: block;
+      }
+
+      /* 3. Mic Badge on Mobile */
+      #mic-badge {
+        top: 8px;
+        right: 8px;
+        padding: 5px 9px;
+        font-size: 10px;
+      }
+
+      /* 4. Spatial Radar Widget on Mobile (top-right under mic) */
+      #spatial-radar-widget {
+        bottom: auto !important;
+        top: 44px !important;
+        right: 8px !important;
+        left: auto !important;
+        width: 110px !important;
+        padding: 5px !important;
+        border-radius: 8px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
+      }
+      .radar-viewport {
+        height: 64px !important;
+      }
+      .radar-title {
+        font-size: 8px !important;
+      }
+      .radar-badge {
+        font-size: 7px !important;
+        padding: 1px 3px !important;
+      }
+      .radar-audio-btn {
+        padding: 2px 4px !important;
+        font-size: 8px !important;
+        margin-top: 4px !important;
+      }
+
+      /* 5. Voice Subtitles */
+      #voice-subtitles {
+        bottom: 56px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: 94vw !important;
+        max-width: 94vw !important;
+        padding: 5px 10px !important;
+        font-size: 10px !important;
+        line-height: 1.3 !important;
+        border-radius: 14px !important;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.7) !important;
+      }
+
+      /* 6. Display Mobile Walk Controls on mobile */
+      #mobile-walk-controls {
+        display: flex !important;
+      }
+
+      /* 7. Floating Teleport Dock (Swipeable Ribbon) */
+      #tour-floating-dock {
+        bottom: 8px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: 95vw !important;
+        max-width: 95vw !important;
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding: 5px 8px !important;
+        gap: 4px !important;
+        border-radius: 20px !important;
+        scrollbar-width: none !important;
+        justify-content: flex-start !important;
+      }
+      #tour-floating-dock::-webkit-scrollbar { display: none !important; }
+      .dock-pill {
+        padding: 5px 9px !important;
+        font-size: 10px !important;
+        flex-shrink: 0 !important;
+      }
+
+      /* 8. Fullscreen Drawers on Mobile */
+      #pricing-drawer, #ai-stylist-drawer {
+        width: 100vw !important;
+        right: -100vw !important;
+        padding: 16px !important;
+      }
+      #pricing-drawer.open { right: 0 !important; }
+      #ai-stylist-drawer { left: -100vw !important; }
+      #ai-stylist-drawer.open { left: 0 !important; }
+    }
   </style>
 </head>
 <body>
@@ -310,14 +533,26 @@
     <div class="tab-panel active" id="tab-tour">
       
       <!-- 2D HUD Overlays in 3D Mode -->
-      <div id="hud-status">
-        <div><strong>ImmoVision VR</strong> | Alinur S. (240014) | BI Group Astana</div>
-        <div>Property: <strong>Grand Opera Luxury 2-Bedroom (85.7 m²)</strong></div>
-        <div>Finishes: <strong id="hud-floor-label">Scandinavian Oak</strong> | <strong id="hud-wall-label">Alabaster Beige</strong></div>
+      <div id="hud-status" title="Нажмите, чтобы свернуть / развернуть детали">
+        <div><strong>ImmoVision VR</strong> | Alinur S. (240014) | BI Group</div>
+        <div class="hud-details">Property: <strong>Grand Opera Luxury 2-Bedroom (85.7 m²)</strong></div>
+        <div class="hud-details">Finishes: <strong id="hud-floor-label">Scandinavian Oak</strong> | <strong id="hud-wall-label">Alabaster Beige</strong></div>
         <div>Lighting: <strong id="hud-light-label">DAY (5500K)</strong> | Estimate: <strong id="hud-price-label" style="color: var(--accent);">48.50M KZT</strong></div>
       </div>
-      <div id="mic-badge">MIC: READY</div>
-      <div id="voice-subtitles">Voice recognition active. Speak commands to customize.</div>
+      <div id="mic-badge" title="Нажмите, чтобы включить/выключить микрофон">
+        🎙️ <span id="mic-label">ТАПНИ ДЛЯ РЕЧИ</span> <button id="mic-lang-btn" title="Переключить язык (RU/EN)">RU</button>
+      </div>
+      <div id="voice-subtitles" title="Нажмите, чтобы говорить">🎙️ Говорите: "Мрамор", "Дуб", "Закат", "Ночь", "Балкон", "Гостиная"</div>
+
+      <!-- Touch Walk Controls for Mobile Devices (WASD equivalent) -->
+      <div id="mobile-walk-controls">
+        <button id="m-walk-up" class="m-walk-btn" aria-label="Walk Forward">▲</button>
+        <div class="m-walk-row">
+          <button id="m-walk-left" class="m-walk-btn" aria-label="Strafe Left">◄</button>
+          <button id="m-walk-down" class="m-walk-btn" aria-label="Walk Backward">▼</button>
+          <button id="m-walk-right" class="m-walk-btn" aria-label="Strafe Right">►</button>
+        </div>
+      </div>
 
       <!-- Spatial Holographic Radar Widget -->
       <div id="spatial-radar-widget">
@@ -534,7 +769,7 @@
         <a-sky id="sky-environment" src="#tex-sky-day" rotation="0 -75 0"></a-sky>
 
         <!-- Ergonomic Camera Rig (Standing eye level 1.65m) -->
-        <a-entity id="rig" position="0 0 1.5" x0014-teleport-controls>
+        <a-entity id="rig" position="0 0 1.5" x0014-teleport-controls x0014-mobile-walk-controls>
           <a-camera id="head" position="0 1.65 0" look-controls="pointerLockEnabled: false">
             <a-entity position="0 0 -1"
                       geometry="primitive: ring; radiusInner: 0.014; radiusOuter: 0.022"
@@ -1418,6 +1653,59 @@ A confirmation SMS and preliminary contract have been dispatched to the BI Group
       const btnDrawerLock = document.getElementById('btn-drawer-lock');
       if (btnLock) btnLock.addEventListener('click', lockHandler);
       if (btnDrawerLock) btnDrawerLock.addEventListener('click', lockHandler);
+
+      // Interactive Mic & Voice Controls Controller
+      const micBadge = document.getElementById('mic-badge');
+      const voiceSubtitles = document.getElementById('voice-subtitles');
+      const micLangBtn = document.getElementById('mic-lang-btn');
+      const hudStatus = document.getElementById('hud-status');
+
+      const getVoiceConfig = () => {
+        const el = document.querySelector('[x0014-voice-configurator]');
+        return (el && el.components['x0014-voice-configurator']) ? el.components['x0014-voice-configurator'] : null;
+      };
+
+      if (micBadge) {
+        micBadge.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const vc = getVoiceConfig();
+          if (!vc) return;
+
+          if (e.target && e.target.id === 'mic-lang-btn') {
+            const newLang = vc.toggleLanguage();
+            if (micLangBtn) micLangBtn.textContent = newLang;
+            return;
+          }
+
+          vc.toggleListening();
+        });
+      }
+
+      if (micLangBtn) {
+        micLangBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const vc = getVoiceConfig();
+          if (vc) {
+            const newLang = vc.toggleLanguage();
+            micLangBtn.textContent = newLang;
+          }
+        });
+      }
+
+      if (voiceSubtitles) {
+        voiceSubtitles.addEventListener('click', () => {
+          const vc = getVoiceConfig();
+          if (vc) vc.toggleListening();
+        });
+      }
+
+      if (hudStatus) {
+        hudStatus.addEventListener('click', () => {
+          hudStatus.classList.toggle('expanded');
+        });
+      }
     });
   </script>
 </body>
