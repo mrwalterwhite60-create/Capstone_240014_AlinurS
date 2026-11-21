@@ -283,10 +283,7 @@ AFRAME.registerComponent('x0014-voice-configurator', {
         this.isListening = true;
         this.micGranted = true;
         this.system.state.voiceActive = true;
-        const hint = this.currentLang.startsWith('ru') 
-          ? 'Микрофон АКТИВЕН! Говорите: "Мрамор", "Дуб", "Закат", "Ночь", "Балкон"'
-          : 'Microphone ACTIVE! Speak: "Marble", "Oak floor", "Night mode", "Terrace"';
-        this.displaySubtitle(hint);
+        this.displaySubtitle('Microphone ACTIVE! Speak: "Marble", "Oak floor", "Sunset", "Night", "Terrace"');
         this.updateMicBadge(true);
       };
 
@@ -301,10 +298,7 @@ AFRAME.registerComponent('x0014-voice-configurator', {
         if (err.error === 'not-allowed') {
           this.micGranted = false;
           this.isListening = false;
-          const msg = this.currentLang.startsWith('ru')
-            ? 'Доступ к микрофону отклонен в браузере. Нажмите на значок микрофона в строке браузера и разрешите доступ!'
-            : 'Microphone permission denied. Allow mic access in browser address bar!';
-          this.displaySubtitle(msg, true);
+          this.displaySubtitle('Microphone permission denied. Allow mic access in browser address bar!', true);
           this.system.state.fallbackUsed = true;
           this.updateMicBadge(false, 'Denied');
         } else if (err.error === 'no-speech') {
@@ -330,7 +324,7 @@ AFRAME.registerComponent('x0014-voice-configurator', {
     if (this.recognition) {
       try {
         this.userWantsListening = true;
-        this.recognition.lang = this.currentLang || 'ru-RU';
+        this.recognition.lang = this.currentLang || 'en-US';
         this.recognition.start();
         this.isListening = true;
         this.updateMicBadge(true);
@@ -360,7 +354,7 @@ AFRAME.registerComponent('x0014-voice-configurator', {
   },
 
   toggleLanguage: function () {
-    this.currentLang = this.currentLang === 'ru-RU' ? 'en-US' : 'ru-RU';
+    this.currentLang = this.currentLang === 'en-US' ? 'ru-RU' : 'en-US';
     if (this.recognition) {
       this.recognition.lang = this.currentLang;
       if (this.isListening) {
@@ -370,13 +364,9 @@ AFRAME.registerComponent('x0014-voice-configurator', {
         } catch(e) {}
       }
     }
-    const langLabel = this.currentLang === 'ru-RU' ? 'РУС' : 'ENG';
-    const hint = this.currentLang === 'ru-RU' 
-      ? 'Язык: РУССКИЙ. Говорите: "Дуб", "Мрамор", "Ночь", "Закат", "Балкон"'
-      : 'Language: ENGLISH. Speak: "Oak", "Marble", "Night", "Sunset", "Balcony"';
-    this.displaySubtitle(hint);
+    this.displaySubtitle('Language: ENGLISH. Speak: "Oak", "Marble", "Night", "Sunset", "Terrace"');
     this.updateMicBadge(this.isListening);
-    return langLabel;
+    return 'EN';
   },
 
   processSpokenCommand: function (transcript) {
@@ -398,11 +388,8 @@ AFRAME.registerComponent('x0014-voice-configurator', {
       return;
     }
 
-    const unrec = this.currentLang === 'ru-RU'
-      ? `Не распознано: "${transcript}". Попробуйте: "Мрамор", "Дуб", "Ночь", "Закат"`
-      : `Unrecognized: "${transcript}". Try saying: "Oak floor", "Marble", "Night mode"`;
-    this.displaySubtitle(unrec, true);
-    this.speakFeedback(this.currentLang === 'ru-RU' ? "Команда не распознана. Попробуйте сказать мрамор, дуб или ночь." : "Command not recognized. Please try saying oak floor, marble, or night mode.");
+    this.displaySubtitle(`Unrecognized: "${transcript}". Try saying: "Oak floor", "Marble", "Night mode"`, true);
+    this.speakFeedback("Command not recognized. Please try saying oak floor, marble, or night mode.");
   },
 
   checkFuzzyIntent: function (text) {
@@ -537,17 +524,15 @@ AFRAME.registerComponent('x0014-voice-configurator', {
   updateMicBadge: function (isActive, label = '') {
     const badge = document.getElementById('mic-badge');
     if (badge) {
-      const isRu = (this.currentLang && this.currentLang.startsWith('ru'));
-      const langStr = isRu ? 'RU' : 'EN';
       if (isActive) {
-        badge.innerHTML = `🎙️ <span style="font-weight: 800; color: #fff;">● REC [${langStr}]</span>`;
+        badge.innerHTML = `🎙️ <span style="font-weight: 800; color: #fff;">● LISTENING...</span>`;
         badge.style.backgroundColor = 'rgba(239, 68, 68, 0.9)';
         badge.style.borderColor = '#ef4444';
         badge.style.color = '#ffffff';
         badge.style.boxShadow = '0 0 14px rgba(239, 68, 68, 0.7)';
       } else {
-        const textLabel = label ? label : (isRu ? 'ТАПНИ ДЛЯ РЕЧИ' : 'TAP TO SPEAK');
-        badge.innerHTML = `🎙️ <span>${textLabel}</span> <span style="opacity: 0.7; font-size: 9px; margin-left: 4px;">[${langStr}]</span>`;
+        const textLabel = label ? label : 'TAP TO SPEAK';
+        badge.innerHTML = `🎙️ <span>${textLabel}</span>`;
         badge.style.backgroundColor = 'rgba(15, 23, 42, 0.88)';
         badge.style.borderColor = 'rgba(56, 189, 248, 0.6)';
         badge.style.color = '#38bdf8';

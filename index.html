@@ -533,16 +533,16 @@
     <div class="tab-panel active" id="tab-tour">
       
       <!-- 2D HUD Overlays in 3D Mode -->
-      <div id="hud-status" title="Нажмите, чтобы свернуть / развернуть детали">
-        <div><strong>ImmoVision VR</strong> | Alinur S. (240014) | BI Group</div>
+      <div id="hud-status" title="Tap to toggle details">
+        <div><strong>ImmoVision VR</strong> | Alinur S. (240014) | BI Group Astana</div>
         <div class="hud-details">Property: <strong>Grand Opera Luxury 2-Bedroom (85.7 m²)</strong></div>
         <div class="hud-details">Finishes: <strong id="hud-floor-label">Scandinavian Oak</strong> | <strong id="hud-wall-label">Alabaster Beige</strong></div>
         <div>Lighting: <strong id="hud-light-label">DAY (5500K)</strong> | Estimate: <strong id="hud-price-label" style="color: var(--accent);">48.50M KZT</strong></div>
       </div>
-      <div id="mic-badge" title="Нажмите, чтобы включить/выключить микрофон">
-        🎙️ <span id="mic-label">ТАПНИ ДЛЯ РЕЧИ</span> <button id="mic-lang-btn" title="Переключить язык (RU/EN)">RU</button>
+      <div id="mic-badge" title="Tap to toggle speech recognition">
+        🎙️ <span id="mic-label">TAP TO SPEAK</span>
       </div>
-      <div id="voice-subtitles" title="Нажмите, чтобы говорить">🎙️ Говорите: "Мрамор", "Дуб", "Закат", "Ночь", "Балкон", "Гостиная"</div>
+      <div id="voice-subtitles" title="Tap to speak">🎙️ Speak: "Marble", "Oak floor", "Sunset", "Night", "Terrace", "Living room"</div>
 
       <!-- Touch Walk Controls for Mobile Devices (WASD equivalent) -->
       <div id="mobile-walk-controls">
@@ -1255,14 +1255,14 @@
         </div>
 
         <div class="panel-card">
-          <h3>🗣️ Voice Command Grammar Matrix (Bilingual)</h3>
-          <div class="metric-row"><span style="font-weight: 700; color: var(--accent);">Spoken Voice Commands (EN / RU)</span><span style="font-weight: 700; color: var(--accent);">Triggered Action</span></div>
-          <div class="metric-row"><span>"Dark oak floor", "Calacatta marble", "Light wood", "Светлый дуб"</span><span class="metric-val">Floor PBR Material</span></div>
-          <div class="metric-row"><span>"Beige walls", "Blue accent wall", "Sage green", "Бежевые стены"</span><span class="metric-val">Wall Coating Plaster</span></div>
-          <div class="metric-row"><span>"Evening lighting", "Sunset mood", "Day mode", "Вечерний свет"</span><span class="metric-val">Atmosphere & Skybox</span></div>
-          <div class="metric-row"><span>"Go to kitchen", "Master bedroom", "Terrace view", "Гостиная"</span><span class="metric-val">Camera Teleport</span></div>
-          <div class="metric-row"><span>"Open terrace door", "Close door", "Открой балкон"</span><span class="metric-val">Sliding Door Rail</span></div>
-          <div class="metric-row"><span>"Summary", "Price quote", "How much", "Смета"</span><span class="metric-val">BIM Quotation Drawer</span></div>
+          <h3>🗣️ Voice Command Grammar Matrix</h3>
+          <div class="metric-row"><span style="font-weight: 700; color: var(--accent);">Spoken Voice Commands (EN)</span><span style="font-weight: 700; color: var(--accent);">Triggered Action</span></div>
+          <div class="metric-row"><span>"Dark oak floor", "Calacatta marble", "Light wood", "Hardwood"</span><span class="metric-val">Floor PBR Material</span></div>
+          <div class="metric-row"><span>"Beige walls", "Blue accent wall", "Sage green", "Pearl white"</span><span class="metric-val">Wall Coating Plaster</span></div>
+          <div class="metric-row"><span>"Evening lighting", "Sunset mood", "Day mode", "Night lights"</span><span class="metric-val">Atmosphere & Skybox</span></div>
+          <div class="metric-row"><span>"Go to kitchen", "Master bedroom", "Terrace view", "Living room"</span><span class="metric-val">Camera Teleport</span></div>
+          <div class="metric-row"><span>"Open terrace door", "Close door", "Slide balcony"</span><span class="metric-val">Sliding Door Rail</span></div>
+          <div class="metric-row"><span>"Summary", "Price quote", "How much", "Show estimate"</span><span class="metric-val">BIM Quotation Drawer</span></div>
 
           <button class="btn-action-primary" onclick="document.querySelector('[data-tab=tab-tour]').click();">
             🎙️ Try Voice Commands in 3D Tour
@@ -1670,27 +1670,7 @@ A confirmation SMS and preliminary contract have been dispatched to the BI Group
           e.preventDefault();
           e.stopPropagation();
           const vc = getVoiceConfig();
-          if (!vc) return;
-
-          if (e.target && e.target.id === 'mic-lang-btn') {
-            const newLang = vc.toggleLanguage();
-            if (micLangBtn) micLangBtn.textContent = newLang;
-            return;
-          }
-
-          vc.toggleListening();
-        });
-      }
-
-      if (micLangBtn) {
-        micLangBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          const vc = getVoiceConfig();
-          if (vc) {
-            const newLang = vc.toggleLanguage();
-            micLangBtn.textContent = newLang;
-          }
+          if (vc) vc.toggleListening();
         });
       }
 
